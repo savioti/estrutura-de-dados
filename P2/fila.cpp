@@ -51,7 +51,7 @@ void Fila::Enfileirar(int _valor) {
         inicio = novoNoh;
         fim = novoNoh;
     } else {
-        inicio->proximo = novoNoh;
+        fim->proximo = novoNoh;
         fim = novoNoh;
     }
     tamanho++;
@@ -79,5 +79,9 @@ void Fila::Imprime() {
         cout << nohAtual->valor << " ";
         nohAtual = nohAtual->proximo;
     }
-    cout << endl << "Tamanho: " << tamanho << endl;
+    if (inicio == NULL) {
+        cerr << "Fila vazia!" << endl;
+    } else {
+        cout << endl << "Tamanho: " << tamanho << endl;
+    }
 }
