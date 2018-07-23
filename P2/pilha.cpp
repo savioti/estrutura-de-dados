@@ -55,15 +55,16 @@ void Pilha::Push(int _valor) {
     }
 }
 
-int Pilha::Push() {
+int Pilha::Pop() {
     int removido = -1;
 
     if (topo == NULL) {
         cerr << "Pilha vazia!" << endl;
     } else {
-        Noh* deletado = topo;
-        topo = topo->proximo;
+        removido = topo->valor;
+        Noh* novoTopo = topo->proximo;
         delete topo;
+        topo = novoTopo;
         tamanho--;
     }
     return removido;
@@ -76,5 +77,9 @@ void Pilha::Imprime() {
         cout << nohAtual->valor << " ";
         nohAtual = nohAtual->proximo;
     }
-    cout << endl << "Tamanho: " << tamanho << endl;
+    if (topo == NULL) {
+        cerr << "Pilha vazia!" << endl;
+    } else {
+        cout << endl << "Tamanho: " << tamanho << endl;
+    }
 }
