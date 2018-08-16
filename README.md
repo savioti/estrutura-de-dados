@@ -1,2 +1,2 @@
 # estrutura-de-dados
-Códigos provindos dos aulões de ED
+Códigos desenvolvidos para os aulões de ED
