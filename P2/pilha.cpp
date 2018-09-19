@@ -19,7 +19,11 @@ public:
     Pilha();
     ~Pilha();
     void Push(int _valor);
+    void Empilha(int _valor) {Push(_valor);}
+    int Spy() {return Espia();}
+    int Espia();
     int Pop();
+    int Desempilha() {return Pop();}
     void Imprime();
 private:
     Noh* topo;
@@ -53,6 +57,14 @@ void Pilha::Push(int _valor) {
         topo = novoNoh;
         tamanho++;
     }
+}
+
+int Pilha::Espia() {
+    if (topo == NULL) {
+        cerr << "Pilha vazia!" << endl;
+        return -1;
+    }
+    return topo->valor;
 }
 
 int Pilha::Pop() {
