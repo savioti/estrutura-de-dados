@@ -2,49 +2,54 @@
 using namespace std;
 
 class Noh {
-friend class Fila;
+    friend class Fila;
 public:
-    Noh(int n = 0) {
-        valor = n;
-        proximo = NULL;
-    };
+    Noh (int _valor);
 private:
     int valor;
     Noh* proximo;
 };
 
-class Fila {
+Noh::Noh(int _valor) {
+    valor = _valor;
+    proximo = NULL;
+}
 
+class Fila {
 public:
     Fila();
     ~Fila();
-    void Enfileirar(int _valor);
+    void Queue(int _valor);
+    void Enfileira(int _valor);
+    int Spy();
+    int Espiar();
+    int Dequeue();
     int Desenfileirar();
-    void Imprime();
+    void Print();
 private:
+    int tamanho;
     Noh* inicio;
     Noh* fim;
-    int tamanho;
 };
 
-Fila::Fila() {
+Fila::Fila () {
+    tamanho = 0;
     inicio = NULL;
     fim = NULL;
-    tamanho = 0;
 }
 
-Fila::~Fila() {
-    Noh* nohAtual = inicio;
+Fila::~Fila (){
+    Noh* aDeletar = inicio;
     Noh* aux = inicio;
 
-    while (nohAtual != NULL) {
-        aux = nohAtual;
-        nohAtual = nohAtual->proximo;
-        delete aux;
+    while (aDeletar != NULL) {
+        aux = aux->proximo;
+        delete aDeletar;
+        aDeletar = aux;
     }
 }
 
-void Fila::Enfileirar(int _valor) {
+void Fila::Queue(int _valor) {
     Noh* novoNoh = new Noh(_valor);
 
     if (inicio == NULL) {
@@ -57,31 +62,51 @@ void Fila::Enfileirar(int _valor) {
     tamanho++;
 }
 
-int Fila::Desenfileirar() {
-    int removido = -1;
-
-    if (inicio == NULL) {
-        cerr << "Fila vazia!!!" << endl;
-    } else {
-        removido = inicio->valor;
-        Noh* novoInicio = inicio->proximo;
-        delete inicio;
-        inicio = novoInicio;
-        tamanho--;
-    }
-    return removido;
+void Fila::Enfileira(int _valor) {
+    Queue(_valor);
 }
 
-void Fila::Imprime() {
-    Noh* nohAtual = inicio;
-
-    while (nohAtual != NULL) {
-        cout << nohAtual->valor << " ";
-        nohAtual = nohAtual->proximo;
-    }
+int Fila::Spy() {
     if (inicio == NULL) {
         cerr << "Fila vazia!" << endl;
-    } else {
-        cout << endl << "Tamanho: " << tamanho << endl;
+        return -1;
     }
+
+    return inicio->valor;
+}
+
+int Fila::Espiar() {
+    return Spy();
+}
+
+int Fila::Dequeue() {
+    if (inicio == NULL) {
+        cerr << "Fila vazia!" << endl;
+        return -1;
+    } else {
+        int retorno = inicio->valor;
+        Noh* aux = inicio;
+        inicio = inicio->proximo;
+        delete aux;
+
+        if (tamanho == 1) {
+            fim = NULL;
+        }
+        tamanho--;
+        return retorno;
+    }
+}
+
+int Fila::Desenfileirar() {
+    return Dequeue();
+}
+
+void Fila::Print() {
+    Noh* aux = inicio;
+
+    while (aux != NULL) {
+        cout << aux->valor << " ";
+        aux = aux->proximo;
+    }
+    cout << endl << "Tamanho: " << tamanho << endl;
 }
