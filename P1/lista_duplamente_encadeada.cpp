@@ -31,9 +31,10 @@ public:
     void RemoveDoInicio();
     void RemoveDoFim();
     void RemoveDaPosicao(int _pos);
-    int ObterPosicaoDoValor(int _valor);
+    int ObterPosicaoDoNoh(Noh* _atual);
     int PegarValorNaPosicao(int _pos);
     void TrocaNohs(int _pos1, int _pos2);
+    void RemoveRepetidos();
 private:
     int tamanho;
     Noh* primeiro;
@@ -223,20 +224,21 @@ void Lista::RemoveDaPosicao(int _pos){
     }
 }
 
-int Lista::ObterPosicaoDoValor(int _valor) {
+int Lista::ObterPosicaoDoNoh(Noh* _atual) {
     if (primeiro == NULL) {
-        cerr << "Lista vazia!" << endl;
+        cerr << "Lista vazia" << endl;
         return -1;
     }
-    int i = 0;
     Noh* aux = primeiro;
+    int i = 0;
 
-    while (aux != NULL and aux->valor != _valor) {
-        if (aux->valor == _valor) {
-            return i;
-        }
+    while (aux != NULL and aux != _atual) {
+        
         aux = aux->proximo;
         i++;
+    }
+    if (aux == _atual) {
+        return i;
     }
     cerr << "Nao encontrado!" << endl;
     return -1;
