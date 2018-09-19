@@ -124,26 +124,23 @@ void Lista::InsereNaPosicao(int _dado, int _pos){
 void Lista::Imprime(){
 
     Noh* nohAtual = primeiro;
-    cout << "Impressao normal: ";
 
-    while(nohAtual->proximo != NULL){
+    while(nohAtual != NULL){
         cout << nohAtual->valor << " ";
         nohAtual = nohAtual->proximo;
     }
-    cout << nohAtual->valor << endl;
+    cout << endl;
 }
 
 void Lista::ImpressaoReversa(){
 
     Noh* nohAtual = ultimo;
-    cout << "Impressao Reversa: ";
 
-    while(nohAtual->anterior != NULL){
+    while(nohAtual != NULL){
         cout << nohAtual->valor << " ";
         nohAtual = nohAtual->anterior;
     }
-    cout << nohAtual->valor << endl;
-    cout << "A lista contem " << tamanho << " elementos." << endl;
+    cout << endl;
 }
 
 void Lista::RemoveUnico(){
