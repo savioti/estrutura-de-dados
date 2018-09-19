@@ -6,14 +6,14 @@ class Noh{
 
 public:
     Noh(int _dado = 0){
-        mDado = _dado;
+        valor = _dado;
         proximo = NULL;
         anterior = NULL;
     }
 private:
     Noh* proximo;
     Noh* anterior;
-    int mDado;
+    int valor;
 };
 
 class Lista {
@@ -31,11 +31,11 @@ public:
     void RemoveDoInicio();
     void RemoveDoFim();
     void RemoveDaPosicao(int _pos);
-    int GetTamanho();
+    int ObterPosicaoDoValor(int _valor);
+    int PegarValorNaPosicao(int _pos);
     void TrocaNohs(int _pos1, int _pos2);
-
 private:
-    int mTamanho;
+    int tamanho;
     Noh* primeiro;
     Noh* ultimo;
 };
@@ -44,7 +44,7 @@ Lista::Lista(){
 
     primeiro = NULL;
     ultimo = NULL;
-    mTamanho = 0;
+    tamanho = 0;
 }
 
 Lista::~Lista(){
@@ -64,7 +64,7 @@ void Lista::InsereOPrimeiro(int _dado){
     Noh* novoNoh = new Noh(_dado);
     primeiro = novoNoh;
     ultimo = novoNoh;
-    mTamanho++;
+    tamanho++;
 }
 
 void Lista::InsereNoFim(int _dado){
@@ -76,7 +76,7 @@ void Lista::InsereNoFim(int _dado){
         ultimo->proximo = novoNoh;
         novoNoh->anterior = ultimo;
         ultimo = novoNoh;
-        mTamanho++;
+        tamanho++;
     }
 }
 
@@ -89,19 +89,19 @@ void Lista::InsereNoInicio(int _dado){
         novoNoh->proximo = primeiro;
         primeiro->anterior = novoNoh;
         primeiro = novoNoh;
-        mTamanho++;
+        tamanho++;
     }
 }
 
 void Lista::InsereNaPosicao(int _dado, int _pos){
 
-    if(_pos < 0 or _pos > mTamanho){
+    if(_pos < 0 or _pos > tamanho){
         cout << "Posicao invalida" << endl;
     }else if(primeiro == NULL){
         InsereOPrimeiro(_dado);
     }else if(_pos == 0){
         InsereNoInicio(_dado);
-    }else if(_pos == mTamanho){
+    }else if(_pos == tamanho){
         InsereNoFim(_dado);
     }else{
         Noh* aux = primeiro;
@@ -117,7 +117,7 @@ void Lista::InsereNaPosicao(int _dado, int _pos){
         novoNoh->anterior = aux->anterior;
         novoNoh->proximo = aux;
         aux->anterior = novoNoh;
-        mTamanho++;
+        tamanho++;
     }
 }
 
@@ -127,10 +127,10 @@ void Lista::Imprime(){
     cout << "Impressao normal: ";
 
     while(nohAtual->proximo != NULL){
-        cout << nohAtual->mDado << " ";
+        cout << nohAtual->valor << " ";
         nohAtual = nohAtual->proximo;
     }
-    cout << nohAtual->mDado << endl;
+    cout << nohAtual->valor << endl;
 }
 
 void Lista::ImpressaoReversa(){
@@ -139,11 +139,11 @@ void Lista::ImpressaoReversa(){
     cout << "Impressao Reversa: ";
 
     while(nohAtual->anterior != NULL){
-        cout << nohAtual->mDado << " ";
+        cout << nohAtual->valor << " ";
         nohAtual = nohAtual->anterior;
     }
-    cout << nohAtual->mDado << endl;
-    cout << "A lista contem " << mTamanho << " elementos." << endl;
+    cout << nohAtual->valor << endl;
+    cout << "A lista contem " << tamanho << " elementos." << endl;
 }
 
 void Lista::RemoveUnico(){
@@ -152,12 +152,12 @@ void Lista::RemoveUnico(){
     delete nohAtual;
     primeiro = NULL;
     ultimo = NULL;
-    mTamanho--;
+    tamanho--;
 }
 
 void Lista::RemoveDoInicio(){
 
-    if(mTamanho == 1){
+    if(tamanho == 1){
         RemoveUnico();
     }else{
         Noh* temp = primeiro;
@@ -165,12 +165,12 @@ void Lista::RemoveDoInicio(){
         primeiro->anterior = NULL;
         delete temp;
     }
-    mTamanho--;
+    tamanho--;
 }
 
 void Lista::RemoveDoFim(){
 
-    if(mTamanho == 1){
+    if(tamanho == 1){
         RemoveUnico();
     }else{
         Noh* temp = ultimo;
@@ -178,22 +178,22 @@ void Lista::RemoveDoFim(){
         ultimo->proximo = NULL;
         delete temp;
     }
-    mTamanho--;
+    tamanho--;
 }
 
 void Lista::RemoveDaPosicao(int _pos){
 
-    if(_pos < 0 or _pos >= mTamanho){
+    if(_pos < 0 or _pos >= tamanho){
         cout << "Posicao invalida" << endl;
-    }else if(mTamanho == 1){
+    }else if(tamanho == 1){
         RemoveUnico();
     }else if(_pos == 0){
         RemoveDoInicio();
-    }else if(_pos == mTamanho - 1){
+    }else if(_pos == tamanho - 1){
         RemoveDoFim();
     }else{
 
-        if(_pos < mTamanho /2){
+        if(_pos < tamanho /2){
             Noh* nohAtual = primeiro;
             int i = 0;
 
@@ -206,11 +206,11 @@ void Lista::RemoveDaPosicao(int _pos){
             auxAnterior->proximo = auxPosterior;
             auxPosterior->anterior = auxAnterior;
             delete nohAtual;
-            mTamanho--;
+            tamanho--;
 
         }else{
             Noh* nohAtual = ultimo;
-            int i = mTamanho -1;
+            int i = tamanho -1;
 
             while(i > _pos){
                 nohAtual = nohAtual->anterior;
@@ -221,14 +221,45 @@ void Lista::RemoveDaPosicao(int _pos){
             auxAnterior->proximo = auxPosterior;
             auxPosterior->anterior = auxAnterior;
             delete nohAtual;
-            mTamanho--;
+            tamanho--;
         }
     }
 }
 
-int Lista::GetTamanho(){
+int Lista::ObterPosicaoDoValor(int _valor) {
+    if (primeiro == NULL) {
+        cerr << "Lista vazia!" << endl;
+        return -1;
+    }
+    int i = 0;
+    Noh* aux = primeiro;
 
-    return mTamanho;
+    while (aux != NULL and aux->valor != _valor) {
+        if (aux->valor == _valor) {
+            return i;
+        }
+        aux = aux->proximo;
+        i++;
+    }
+    cerr << "Nao encontrado!" << endl;
+    return -1;
+}
+
+int Lista::PegarValorNaPosicao(int _pos) {
+    if (primeiro == NULL) {
+        cerr << "Lista vazia!" << endl;
+        return -1;
+    }
+    int i = 0;
+    Noh* aux = primeiro;
+    int valor = aux->valor;
+
+    while (i < tamanho and i != _pos +1) {
+        valor = aux->valor;
+        aux = aux->proximo;
+        i++;
+    }
+    return valor;
 }
 
 void Lista::TrocaNohs(int _pos1, int _pos2){
@@ -256,53 +287,17 @@ void Lista::TrocaNohs(int _pos1, int _pos2){
         i++;
     }
 
-    /*if(_pos1 < mTamanho /2){//posicionando o aux1 na pos1
-        int i = 0;
-        aux1 = primeiro;
-
-        while(i < _pos1){
-            aux1 = aux1->proximo;
-            i++;
-        }
-    }else{
-        int i = mTamanho -1;
-        aux1 = ultimo;
-
-        while(i > _pos1){
-            aux1 = aux1->anterior;
-            i--;
-        }
-    }
-
-    if(_pos2 < mTamanho /2){//posicionando o aux2 na pos2
-        int i = 0;
-        aux2 = primeiro;
-
-        while(i < _pos2){
-            aux2 = aux2->proximo;
-            i++;
-        }
-    }else{
-        int i = mTamanho -1;
-        aux2 = ultimo;
-
-        while(i > _pos1){
-            aux2 = aux2->anterior;
-            i--;
-        }
-    }*/
-
-    if(_pos1 < 0 or _pos2 >= mTamanho or _pos1 == _pos2){
+    if(_pos1 < 0 or _pos2 >= tamanho or _pos1 == _pos2){
         cout << "Posicao invalida!" << endl;
-    }else if(mTamanho == 2){
-        cout << "primeiro: " << primeiro->mDado << "  ultimo: " << ultimo->mDado << endl;
+    }else if(tamanho == 2){
+        cout << "primeiro: " << primeiro->valor << "  ultimo: " << ultimo->valor << endl;
         aux1->anterior = aux2;
         aux2->proximo = aux1;
         aux1->proximo = NULL;
         aux2->anterior = NULL;
         primeiro = aux2;
         ultimo = aux1;
-    }else if(_pos1 == 0 and _pos2 == mTamanho -1){
+    }else if(_pos1 == 0 and _pos2 == tamanho -1){
         Noh* aux1Posterior = aux1->proximo;
         Noh* aux2Anterior = aux2->anterior;
         aux2Anterior->proximo = aux1;
@@ -336,9 +331,9 @@ void Lista::TrocaNohs(int _pos1, int _pos2){
             aux1Posterior->anterior = aux2;
             primeiro = aux2;
         }
-    }else if(_pos2 == mTamanho -1){
+    }else if(_pos2 == tamanho -1){
 
-        if(_pos1 == mTamanho -2){
+        if(_pos1 == tamanho -2){
             Noh* aux1Anterior = aux1->anterior;
             aux1Anterior->proximo = aux2;
             aux1->anterior = aux2;
