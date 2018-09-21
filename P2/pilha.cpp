@@ -25,6 +25,7 @@ public:
     int Pop();
     int Desempilha() {return Pop();}
     void Imprime();
+    bool Vazia();
 private:
     Noh* topo;
     int tamanho;
@@ -94,4 +95,11 @@ void Pilha::Imprime() {
     } else {
         cout << endl << "Tamanho: " << tamanho << endl;
     }
+}
+
+bool Pilha::Vazia() {
+    if (topo == NULL) {
+        return true;
+    }
+    return false;
 }
