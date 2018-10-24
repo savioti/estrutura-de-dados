@@ -25,9 +25,7 @@ Torneio::Torneio(int _cap) {
     mTamanho = 0;
     mCapacidade = _cap;
 
-    for(int i = 0; i < mCapacidade; i++){
-        vetor[i] = -1;
-    }
+    vetor[mCapacidade - 1] = -1;
 }
 
 Torneio::~Torneio() {
@@ -37,7 +35,7 @@ Torneio::~Torneio() {
 
 int Torneio::GetPrimeiraFolha() {
 
-    return (mCapacidade -1) / 2;
+    return mCapacidade / 2;
 }
 
 int Torneio::EspiaVencedor() {
@@ -51,7 +49,7 @@ void Torneio::AdicionaParticipante(int _dado) {
 
     if(vetor[mCapacidade -1] != -1){
         cout << "Vetor cheio" << endl;
-    }else{
+    } else {
         vetor[mTamanho + primeiraFolha] = _dado;
         mTamanho++;
     }
@@ -78,9 +76,7 @@ void Torneio::Organiza() {
 }
 
 int Torneio::RetiraVencedor() {
-
-    int vencedor = -1;
-    vencedor = vetor[0];
+    int vencedor = vetor[0];
 
     int primeiraFolha = GetPrimeiraFolha();
 
