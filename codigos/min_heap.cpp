@@ -36,7 +36,7 @@ MinHeap::MinHeap(int _vetorAux[], int _tamanho) {
         vetor[i] = _vetorAux[i];
     }
     for (int i = capacidade / 2; i >= 0; i--) {
-        CorrigeDescendoh(i);
+        CorrigeDescendo(i);
     }
 }
 
