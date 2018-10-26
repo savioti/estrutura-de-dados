@@ -29,10 +29,14 @@ MinHeap::MinHeap(int _capacidade) {
 
 MinHeap::MinHeap(int _vetorAux[], int _tamanho) {
     capacidade = _tamanho;
-    tamanho = 0;
+    tamanho = _tamanho;
     vetor = new int[capacidade];
-    for (int i = 0; i < _tamanho; i++) {
-        Inserir(_vetorAux[i]);
+
+    for (int i = 0; i < capacidade; i++) {
+        vetor[i] = _vetorAux[i];
+    }
+    for (int i = capacidade / 2; i >= 0; i--) {
+        CorrigeDescendoh(i);
     }
 }
 
