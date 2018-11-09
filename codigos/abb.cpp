@@ -7,6 +7,7 @@ public:
     Noh(int _valor);
     ~Noh();
     void CalcularGrau();
+    void CalcularGrauAux(Noh* _noh);
 private:
     int valor;
     int grau;
@@ -33,9 +34,11 @@ Noh::~Noh() {
 }
 
 void Noh::CalcularGrau() {
-    if (pai != NULL) {
-        grau = pai->grau + 1;
-    }
+
+}
+
+void Noh::CalcularGrauAux(Noh* _noh) {
+
 }
 
 class ABB {
@@ -95,10 +98,8 @@ void ABB::InsercaoIterativa(int _valor) {
                 }
             }
         } //fim do while
-        
         novoNoh->pai = percorredor;
-        novoNoh->CalcularGrau();
-
+        novoNoh->grau = percorredor->grau + 1;
         SetAltura();
     }
 }
@@ -151,17 +152,21 @@ int ABB::Remocao(int _valor) {
     Noh* nohADeletar = NohBuscado(_valor);
 
     if (nohADeletar == NULL) {
-        cerr << "O valor nao esta presente na lista" << endl;
+        cerr << "O valor nao esta presente na arvore" << endl;
         return -1;
     } else {
         int dadoRemovido = nohADeletar->valor;
+        Noh* aSerOrganizado = NULL;
 
         if (nohADeletar->esquerda == NULL) {
+            aSerOrganizado = nohADeletar->direita;
             Transplanta(nohADeletar, nohADeletar->direita);
         } else if (nohADeletar->direita == NULL) {
+            aSerOrganizado = nohADeletar->esquerda;
             Transplanta(nohADeletar, nohADeletar->esquerda);
         } else { // noh tem dois filhos
             Noh* sucessor = GetSucessor(nohADeletar);
+            aSerOrganizado = sucessor;
 
             if (sucessor->pai != nohADeletar) {
                 Transplanta(sucessor, sucessor->direita);
@@ -170,12 +175,13 @@ int ABB::Remocao(int _valor) {
             }
             Transplanta(nohADeletar, sucessor);
             sucessor->esquerda = nohADeletar->esquerda;
-            sucessor->esquerda->pai = sucessor;
+            nohADeletar->esquerda->pai = sucessor;
         }
         nohADeletar->esquerda = NULL;
         nohADeletar->direita = NULL;
         delete nohADeletar;
         SetAltura();
+        aSerOrganizado->CalcularGrau();
         return dadoRemovido;
     }
 }
@@ -271,8 +277,6 @@ int main() {
     arvore.Remocao(85);
     arvore.ImprimeEmOrdem();
     arvore.Remocao(65);
-    arvore.ImprimeEmOrdem();
-    arvore.Remocao(35);
     arvore.ImprimeEmOrdem();
 
     return 0;

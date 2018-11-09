@@ -35,7 +35,7 @@ Torneio::~Torneio() {
 
 int Torneio::GetPrimeiraFolha() {
 
-    return (mCapacidade -1) / 2;
+    return mCapacidade / 2;
 }
 
 int Torneio::EspiaVencedor() {

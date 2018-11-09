@@ -28,6 +28,7 @@ public:
     void Alterar(int _chave, string _valor);
     void Remover(int _chave);
     void Imprimir();
+    void AumentarCapacidade();
 private:
     int capacidade;
     Noh** vetor;
@@ -141,6 +142,17 @@ void TabelaHash::Remover(int _chave) {
         }
     }
 }
+
+/*void TabelaHash::AumentarCapacidade() {
+    Noh** novoVetor = new Noh*[capacidade * 2];
+    Noh* percorredor = NULL;
+
+    for (int i = 0; i < capacidade; i++) {
+        percorredor = vetor[i];
+        int numeroHash = FuncaoHash(percorredor->chave, capacidade * 2);
+
+    }
+}*/
 
 void TabelaHash::Imprimir() {
 
