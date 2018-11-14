@@ -134,7 +134,6 @@ void AVL::Insere(int _valor) {
         CalcularFator(novoNoh->pai);
         ChecarBalanceamento(novoNoh->pai);
     }
-
 }
 
 void AVL::Transplanta(Noh* _antigo, Noh* _novo) {
@@ -374,7 +373,7 @@ void AVL::CalcularFator(Noh* _noh) {
     } else if (_noh->esquerda == NULL) {
         _noh->fator = 0 - _noh->direita->altura;
     } else if (_noh->direita == NULL) {
-        _noh->fator = _noh->esquerda->altura;
+        _noh->fator = _noh->esquerda->altura - 0;
     } else {
         _noh->fator = _noh->esquerda->altura - _noh->direita->altura;
     }
