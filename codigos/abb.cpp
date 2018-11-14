@@ -235,7 +235,6 @@ int ABB::SetAlturaAux(Noh* _noh) {
 
 void ABB::ImprimeEmOrdem() {
     ImprimeEmOrdemAux(raiz);
-
     cout << endl << "Altura: " << GetAltura() << endl;
 }
 

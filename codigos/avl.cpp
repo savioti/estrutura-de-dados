@@ -159,11 +159,19 @@ int AVL::Remove(int _valor) {
         return -1;
     } else {
         int dadoRemovido = nohADeletar->valor;
+        Noh* nohASerBalanceado = NULL;
 
         if (nohADeletar->esquerda == NULL) {
             Transplanta(nohADeletar, nohADeletar->direita);
+            nohASerBalanceado = nohADeletar->direita;
+            if (nohASerBalanceado == NULL) {//se nao tem nenhum filho
+                cout << "Pai do noh a deletar: " << nohADeletar->pai->valor << endl;
+                nohASerBalanceado = nohADeletar->pai;
+            }
+
         } else if (nohADeletar->direita == NULL) {
             Transplanta(nohADeletar, nohADeletar->esquerda);
+            nohASerBalanceado = nohADeletar->esquerda;
         } else { // noh tem dois filhos
             Noh* sucessor = GetSucessor(nohADeletar);
 
@@ -175,8 +183,8 @@ int AVL::Remove(int _valor) {
             Transplanta(nohADeletar, sucessor);
             sucessor->esquerda = nohADeletar->esquerda;
             nohADeletar->esquerda->pai = sucessor;
+            nohASerBalanceado = sucessor;
         }
-        Noh* nohASerBalanceado = nohADeletar->pai;
         nohADeletar->esquerda = NULL;
         nohADeletar->direita = NULL;
         nohADeletar->pai = NULL;
@@ -184,6 +192,7 @@ int AVL::Remove(int _valor) {
         AtualizaAlturaDeTodosNohs();
 
         if (nohASerBalanceado != NULL) {
+            cout << "O noh a ser balanceado eh o " << nohASerBalanceado->valor << endl;
             CalcularFator(nohASerBalanceado);
             ChecarBalanceamento(nohASerBalanceado);
         }
@@ -223,31 +232,38 @@ Noh* AVL::BuscaNoh(int _valor) {
 void AVL::ChecarBalanceamento(Noh* _noh) {
     cout << "Chamando balanceamento no noh: " << _noh->valor << endl;
     cout << "O fator desse noh eh: " << _noh->fator << endl;
+    bool houveBalanceamento = false;
+
     if (_noh->fator == -2) {
         int fatorFilhoDireita = _noh->direita->fator;
 
-        if (fatorFilhoDireita == -1) {
+        if (fatorFilhoDireita <= 0) {
             RotacaoEsquerda(_noh);
         } else if (fatorFilhoDireita == 1) {
 			RotacaoDireita(_noh->direita);
 			RotacaoEsquerda(_noh);
         }
-        AtualizaAlturaDeTodosNohs();
+        houveBalanceamento = true;
     } else if (_noh->fator == 2) {
+        cout << "entrou" << endl;
         int fatorFilhoEsquerda = _noh->esquerda->fator;
 
         if (fatorFilhoEsquerda == -1) {
             RotacaoEsquerda(_noh->esquerda);
 			RotacaoDireita(_noh);
-		} else if (fatorFilhoEsquerda == 1) {
+		} else if (fatorFilhoEsquerda >= 0) {
             RotacaoDireita(_noh);
 		}
+        houveBalanceamento = true;
+    }
+    //se houve balanceamento, alturas e graus precisam ser recalculados
+    if (houveBalanceamento) {
         AtualizaAlturaDeTodosNohs();
+        RecalcularGraus();
     }
     //checar se pai esta balanceado
     if (_noh->pai != NULL) {
         CalcularFator(_noh->pai);
-        RecalcularGraus();
         ChecarBalanceamento(_noh->pai);
     }
 }
@@ -378,6 +394,8 @@ int main() {
     arvore.Insere(25);
     arvore.ImprimeEmOrdem();
     arvore.Insere(20);
+    arvore.ImprimeEmOrdem();
+    arvore.Remove(50);
     arvore.ImprimeEmOrdem();
 
     return 0;
