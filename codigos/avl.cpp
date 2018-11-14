@@ -269,7 +269,7 @@ void AVL::ChecarBalanceamento(Noh* _noh) {
 
 void AVL::RotacaoEsquerda(Noh* _noh) {
     cout << "chamando rotacao esquerda no noh " << _noh->valor << endl;
-    //salvar era o filho a direita do _noh
+    //salvar quem era o filho a direita do _noh
     Noh* antigoFilhoADireita = _noh->direita;
     //_noh ganha novo filho a direita, o filho a esquerda do antigoFilhoADireita
     _noh->direita = antigoFilhoADireita->esquerda;
@@ -297,7 +297,7 @@ void AVL::RotacaoEsquerda(Noh* _noh) {
 
 void AVL::RotacaoDireita(Noh* _noh) {
     cout << "chamando rotacao direita no noh " << _noh->valor << endl;
-    //salvar era o filho a esquerda do _noh
+    //salvar quem era o filho a esquerda do _noh
     Noh* antigoFilhoAEsquerda = _noh->esquerda;
     //_noh ganha novo filho a esquerda, o filho a direita do antigoFilhoAEsquerda
     _noh->esquerda = antigoFilhoAEsquerda->direita;
