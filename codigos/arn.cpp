@@ -193,7 +193,6 @@ void ARN::ChecarBalanceamentoInsercao(Noh* _noh) {
     if (tio != NULL) {
         cout << "Cor do tio: " << tio->cor << endl;
     }
-
     //CASO 1: pai vermelho, avo preto e tio vermelho
     //SOLUÇÃO: trocar as cores de pai, avo e tio
     if (pai->cor == "vermelho" and avo->cor == "preto" and (tio != NULL and tio->cor == "vermelho")) {

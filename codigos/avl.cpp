@@ -4,7 +4,7 @@ using namespace std;
 typedef int Dado;
 
 class Noh {
-    friend class ARN;
+    friend class AVL;
 public:
     Noh(Dado _valor);
     ~Noh();
@@ -41,10 +41,10 @@ void Noh::AutoPrint() {
     cout << valor << "/" << grau << " ";
 }
 
-class ARN {
+class AVL {
 public:
-    ARN();
-    ~ARN();
+    AVL();
+    ~AVL();
     void Insere(Dado _valor);
     Dado Remove(Dado _valor);
     void ImprimeEmOrdem();
@@ -66,20 +66,20 @@ private:
     void CalcularFator(Noh* _noh);
 };
 
-ARN::ARN() {
+AVL::AVL() {
     altura = 0;
     raiz = NULL;
 }
 
-ARN::~ARN() {
+AVL::~AVL() {
     delete raiz;
 }
 
-void ARN::AtualizaAlturaDeTodosNohs() {
+void AVL::AtualizaAlturaDeTodosNohs() {
     altura = AtualizaAlturaDeTodosNohsAux(raiz);
 }
 
-int ARN::AtualizaAlturaDeTodosNohsAux(Noh* _noh) {
+int AVL::AtualizaAlturaDeTodosNohsAux(Noh* _noh) {
     if (_noh == NULL){
         return 0;
     }
@@ -98,7 +98,7 @@ int ARN::AtualizaAlturaDeTodosNohsAux(Noh* _noh) {
     return 1 + maior;
 }
 
-void ARN::Insere(int _valor) {
+void AVL::Insere(int _valor) {
     Noh* novoNoh = new Noh(_valor);
 
     if (raiz == NULL) {
@@ -136,7 +136,7 @@ void ARN::Insere(int _valor) {
     }
 }
 
-void ARN::Transplanta(Noh* _antigo, Noh* _novo) {
+void AVL::Transplanta(Noh* _antigo, Noh* _novo) {
     if (_antigo == raiz) {
         raiz = _novo;
     } else if (_antigo->pai->esquerda == _antigo) {
@@ -150,7 +150,7 @@ void ARN::Transplanta(Noh* _antigo, Noh* _novo) {
     }
 }
 
-int ARN::Remove(int _valor) {
+int AVL::Remove(int _valor) {
     Noh* nohADeletar = BuscaNoh(_valor);
 
     if (nohADeletar == NULL) {
@@ -201,7 +201,7 @@ int ARN::Remove(int _valor) {
     }
 }
 
-Noh* ARN::GetSucessor(Noh* _pai) {
+Noh* AVL::GetSucessor(Noh* _pai) {
     if (_pai->direita == NULL){
         return NULL;
     } else {
@@ -213,7 +213,7 @@ Noh* ARN::GetSucessor(Noh* _pai) {
     }
 }
 
-Noh* ARN::BuscaNoh(int _valor) {
+Noh* AVL::BuscaNoh(int _valor) {
     Noh* percorredor = raiz;
 
     while (percorredor != NULL) {
@@ -228,7 +228,7 @@ Noh* ARN::BuscaNoh(int _valor) {
     return NULL;
 }
 
-void ARN::ChecarBalanceamento(Noh* _noh) {
+void AVL::ChecarBalanceamento(Noh* _noh) {
     cout << "Chamando balanceamento no noh: " << _noh->valor << endl;
     cout << "O fator desse noh eh: " << _noh->fator << endl;
     bool houveBalanceamento = false;
@@ -267,7 +267,7 @@ void ARN::ChecarBalanceamento(Noh* _noh) {
     }
 }
 
-void ARN::RotacaoEsquerda(Noh* _noh) {
+void AVL::RotacaoEsquerda(Noh* _noh) {
     cout << "chamando rotacao esquerda no noh " << _noh->valor << endl;
     //salvar quem era o filho a direita do _noh
     Noh* antigoFilhoADireita = _noh->direita;
@@ -295,7 +295,7 @@ void ARN::RotacaoEsquerda(Noh* _noh) {
     antigoFilhoADireita->esquerda = _noh;
 }
 
-void ARN::RotacaoDireita(Noh* _noh) {
+void AVL::RotacaoDireita(Noh* _noh) {
     cout << "chamando rotacao direita no noh " << _noh->valor << endl;
     //salvar quem era o filho a esquerda do _noh
     Noh* antigoFilhoAEsquerda = _noh->esquerda;
@@ -323,11 +323,11 @@ void ARN::RotacaoDireita(Noh* _noh) {
     antigoFilhoAEsquerda->direita = _noh;
 }
 
-void ARN::RecalcularGraus() {
+void AVL::RecalcularGraus() {
     RecalcularGrausAux(raiz);
 }
 
-void ARN::RecalcularGrausAux(Noh* _noh) {
+void AVL::RecalcularGrausAux(Noh* _noh) {
     if (_noh != NULL) {
         if (_noh->esquerda == NULL and _noh->direita == NULL) {
             RecalcularGrauDeUmNoh(_noh);
@@ -338,7 +338,7 @@ void ARN::RecalcularGrausAux(Noh* _noh) {
     }
 }
 
-void ARN::RecalcularGrauDeUmNoh(Noh* _noh) {
+void AVL::RecalcularGrauDeUmNoh(Noh* _noh) {
     if (_noh != NULL) {
         _noh->grau = 1;
         Noh* percorredor = _noh->pai;
@@ -353,12 +353,12 @@ void ARN::RecalcularGrauDeUmNoh(Noh* _noh) {
     }
 }
 
-void ARN::ImprimeEmOrdem() {
+void AVL::ImprimeEmOrdem() {
     ImprimeEmOrdemAux(raiz);
     cout << endl << "Altura da arvore: " << altura << endl;
 }
 
-void ARN::ImprimeEmOrdemAux(Noh* _noh) {
+void AVL::ImprimeEmOrdemAux(Noh* _noh) {
     if (_noh != NULL) {
         ImprimeEmOrdemAux(_noh->esquerda);
         //cout << _noh->valor << "/" << _noh->altura << " ";
@@ -367,7 +367,7 @@ void ARN::ImprimeEmOrdemAux(Noh* _noh) {
     }
 }
 
-void ARN::CalcularFator(Noh* _noh) {
+void AVL::CalcularFator(Noh* _noh) {
     if (_noh->esquerda == NULL and _noh->direita == NULL) {
         _noh->fator = 0;
     } else if (_noh->esquerda == NULL) {
@@ -381,7 +381,7 @@ void ARN::CalcularFator(Noh* _noh) {
 
 int main() {
 
-    ARN arvore;
+    AVL arvore;
 
     arvore.ImprimeEmOrdem();
     arvore.Insere(50);
