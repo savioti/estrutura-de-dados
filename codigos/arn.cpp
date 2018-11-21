@@ -70,7 +70,6 @@ private:
     void AtualizaAltura();
     int AtualizaAlturaAux(Noh* _noh);
     Noh* GetSucessor(Noh* _pai);
-    //void Transplanta(Noh* _antigo, Noh* _novo);
     Noh* BuscaNoh(Dado _valor);
     void ChecarBalanceamentoInsercao(Noh* _noh);
     void RotacaoEsquerda(Noh* _noh);
@@ -151,71 +150,6 @@ void ARN::Insere(int _valor) {
     AtualizaAltura();
     RecalcularGraus();
 }
-
-/*void ARN::Transplanta(Noh* _antigo, Noh* _novo) {
-    if (_antigo == raiz) {
-        raiz = _novo;
-    } else if (_antigo->pai->esquerda == _antigo) {
-        _antigo->pai->esquerda = _novo;
-    } else {
-        _antigo->pai->direita = _novo;
-    }
-
-    if (_novo != NULL) {
-        _novo->pai = _antigo->pai;
-    }
-}
-
-int ARN::Remove(int _valor) {
-    Noh* nohADeletar = BuscaNoh(_valor);
-
-    if (nohADeletar == NULL) {
-        cerr << "O valor nao esta presente na arvore" << endl;
-        return -1;
-    } else {
-        int dadoRemovido = nohADeletar->valor;
-        Noh* nohASerBalanceado = NULL;
-
-        if (nohADeletar->esquerda == NULL) {
-            Transplanta(nohADeletar, nohADeletar->direita);
-            nohASerBalanceado = nohADeletar->direita;
-            if (nohASerBalanceado == NULL) {//se nao tem nenhum filho
-                cout << "Pai do noh a deletar: " << nohADeletar->pai->valor << endl;
-                nohASerBalanceado = nohADeletar->pai;
-            }
-
-        } else if (nohADeletar->direita == NULL) {
-            Transplanta(nohADeletar, nohADeletar->esquerda);
-            nohASerBalanceado = nohADeletar->esquerda;
-        } else { // noh tem dois filhos
-            Noh* sucessor = GetSucessor(nohADeletar);
-
-            if (sucessor->pai != nohADeletar) {
-                Transplanta(sucessor, sucessor->direita);
-                sucessor->direita = nohADeletar->direita;
-                nohADeletar->direita->pai = sucessor;
-            }
-            Transplanta(nohADeletar, sucessor);
-            sucessor->esquerda = nohADeletar->esquerda;
-            nohADeletar->esquerda->pai = sucessor;
-            nohASerBalanceado = sucessor;
-        }
-        nohADeletar->esquerda = NULL;
-        nohADeletar->direita = NULL;
-        nohADeletar->pai = NULL;
-        delete nohADeletar;
-        AtualizaAlturaDeTodosNohs();
-
-        if (nohASerBalanceado != NULL) {
-            cout << "O noh a ser balanceado eh o " << nohASerBalanceado->valor << endl;
-            CalcularFator(nohASerBalanceado);
-            ChecarBalanceamento(nohASerBalanceado);
-        }
-        RecalcularGraus();
-        AtualizaAlturaDeTodosNohs();
-        return dadoRemovido;
-    }
-}*/
 
 Noh* ARN::GetSucessor(Noh* _pai) {
     if (_pai->direita == NULL){
