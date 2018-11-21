@@ -10,10 +10,11 @@ public:
     ~Noh();
 private:
     void AutoPrint();
+    void InverterCor();
+    bool ChecaSeEhFilhoAEsquerdaDoPai();
     int valor;
-    int altura;
     int grau;
-    int fator;
+    string cor;
     Noh* pai;
     Noh* esquerda;
     Noh* direita;
@@ -22,7 +23,7 @@ private:
 Noh::Noh(Dado _valor) {
     valor = _valor;
     grau = 1;
-    fator = 0;
+    cor = "vermelho";
     pai = NULL;
     esquerda = NULL;
     direita = NULL;
@@ -38,7 +39,22 @@ Noh::~Noh() {
 }
 
 void Noh::AutoPrint() {
-    cout << valor << "/" << grau << " ";
+    cout << valor << "/" << grau << "/" << cor << " ";
+}
+
+void Noh::InverterCor() {
+    if (cor == "vermelho") {
+        cor = "preto";
+    } else {
+        cor = "vermelho";
+    }
+}
+
+bool Noh::ChecaSeEhFilhoAEsquerdaDoPai() {
+    if (pai->esquerda == this) {
+        return true;
+    }
+    return false;
 }
 
 class ARN {
@@ -46,17 +62,17 @@ public:
     ARN();
     ~ARN();
     void Insere(Dado _valor);
-    Dado Remove(Dado _valor);
+    //Dado Remove(Dado _valor);
     void ImprimeEmOrdem();
 private:
     Noh* raiz;
     int altura;
-    void AtualizaAlturaDeTodosNohs();
-    int AtualizaAlturaDeTodosNohsAux(Noh* _noh);
+    void AtualizaAltura();
+    int AtualizaAlturaAux(Noh* _noh);
     Noh* GetSucessor(Noh* _pai);
-    void Transplanta(Noh* _antigo, Noh* _novo);
+    //void Transplanta(Noh* _antigo, Noh* _novo);
     Noh* BuscaNoh(Dado _valor);
-    void ChecarBalanceamento(Noh* _noh);
+    void ChecarBalanceamentoInsercao(Noh* _noh);
     void RotacaoEsquerda(Noh* _noh);
     void RotacaoDireita(Noh* _noh);
     void RecalcularGraus();
@@ -64,6 +80,7 @@ private:
     void RecalcularGrauDeUmNoh(Noh* _noh);
     void ImprimeEmOrdemAux(Noh* _noh);
     void CalcularFator(Noh* _noh);
+    Noh* GetTio(Noh* _noh);
 };
 
 ARN::ARN() {
@@ -75,16 +92,16 @@ ARN::~ARN() {
     delete raiz;
 }
 
-void ARN::AtualizaAlturaDeTodosNohs() {
-    altura = AtualizaAlturaDeTodosNohsAux(raiz);
+void ARN::AtualizaAltura() {
+    altura = AtualizaAlturaAux(raiz);
 }
 
-int ARN::AtualizaAlturaDeTodosNohsAux(Noh* _noh) {
+int ARN::AtualizaAlturaAux(Noh* _noh) {
     if (_noh == NULL){
         return 0;
     }
-    int esquerda = AtualizaAlturaDeTodosNohsAux(_noh->esquerda);
-    int direita = AtualizaAlturaDeTodosNohsAux(_noh->direita);
+    int esquerda = AtualizaAlturaAux(_noh->esquerda);
+    int direita = AtualizaAlturaAux(_noh->direita);
     int maior = 0;
 
     if (esquerda > direita){
@@ -92,9 +109,6 @@ int ARN::AtualizaAlturaDeTodosNohsAux(Noh* _noh) {
     } else {
         maior = direita;
     }
-    _noh->altura = 1 + maior;
-    cout << "A altura do noh " << _noh->valor << " agora eh " << _noh->altura << endl;
-
     return 1 + maior;
 }
 
@@ -103,6 +117,7 @@ void ARN::Insere(int _valor) {
 
     if (raiz == NULL) {
         raiz = novoNoh;
+        novoNoh->cor = "preto";
     } else {
         Noh* percorredor = raiz;
         bool inserido = false;
@@ -128,15 +143,16 @@ void ARN::Insere(int _valor) {
         novoNoh->grau = percorredor->grau + 1;
     }
     cout << "Valor " << novoNoh->valor << " inserido!" << endl;
-    AtualizaAlturaDeTodosNohs();
 
-    if (novoNoh->pai != NULL) {
-        CalcularFator(novoNoh->pai);
-        ChecarBalanceamento(novoNoh->pai);
+    if (novoNoh != raiz) {
+        ChecarBalanceamentoInsercao(novoNoh);
     }
+
+    AtualizaAltura();
+    RecalcularGraus();
 }
 
-void ARN::Transplanta(Noh* _antigo, Noh* _novo) {
+/*void ARN::Transplanta(Noh* _antigo, Noh* _novo) {
     if (_antigo == raiz) {
         raiz = _novo;
     } else if (_antigo->pai->esquerda == _antigo) {
@@ -199,7 +215,7 @@ int ARN::Remove(int _valor) {
         AtualizaAlturaDeTodosNohs();
         return dadoRemovido;
     }
-}
+}*/
 
 Noh* ARN::GetSucessor(Noh* _pai) {
     if (_pai->direita == NULL){
@@ -228,42 +244,57 @@ Noh* ARN::BuscaNoh(int _valor) {
     return NULL;
 }
 
-void ARN::ChecarBalanceamento(Noh* _noh) {
+void ARN::ChecarBalanceamentoInsercao(Noh* _noh) {
     cout << "Chamando balanceamento no noh: " << _noh->valor << endl;
-    cout << "O fator desse noh eh: " << _noh->fator << endl;
-    bool houveBalanceamento = false;
+    Noh* tio = GetTio(_noh);
+    Noh* avo = _noh->pai->pai;
+    Noh* pai = _noh->pai;
 
-    if (_noh->fator == -2) {
-        int fatorFilhoDireita = _noh->direita->fator;
+    if (pai != NULL) {
+        cout << "Cor do pai: " << pai->cor << " " << endl;
+    }
+    if (avo != NULL) {
+        cout << "Cor do avo: " << avo->cor << " " << endl;
+    }
+    if (tio != NULL) {
+        cout << "Cor do tio: " << tio->cor << endl;
+    }
 
-        if (fatorFilhoDireita <= 0) {
-            RotacaoEsquerda(_noh);
-        } else if (fatorFilhoDireita == 1) {
-			RotacaoDireita(_noh->direita);
-			RotacaoEsquerda(_noh);
+    //CASO 1: pai vermelho, avo preto e tio vermelho
+    //SOLUÇÃO: trocar as cores de pai, avo e tio
+    if (pai->cor == "vermelho" and avo->cor == "preto" and (tio != NULL and tio->cor == "vermelho")) {
+        pai->InverterCor();
+        avo->InverterCor();
+        tio->InverterCor();
+    //CASO 2: pai vermelho, avo preto e tio preto
+    //SOLUÇÃO: rotações
+    } else if (pai->cor == "vermelho" and avo->cor == "preto" and (tio == NULL or tio->cor == "preto")) {
+        cout << "Tratamento especial" << endl;
+        //semelhante a fator 2 e fator do filho 0 ou 1 - rotação simples
+        if (_noh->ChecaSeEhFilhoAEsquerdaDoPai() and pai->ChecaSeEhFilhoAEsquerdaDoPai()) {
+            RotacaoDireita(avo);
+            pai->InverterCor();
+        } //semelhante a fator -2 e fator do filho 0 ou -1 - rotação simples
+        else if (!_noh->ChecaSeEhFilhoAEsquerdaDoPai() and !pai->ChecaSeEhFilhoAEsquerdaDoPai()) {
+            RotacaoEsquerda(avo);
+            pai->InverterCor();
+        } //semelhante a fator 2 e fator do filho -1 - rotaçaõ dupla
+        else if (!_noh->ChecaSeEhFilhoAEsquerdaDoPai() and pai->ChecaSeEhFilhoAEsquerdaDoPai()) {
+            RotacaoEsquerda(pai);
+            RotacaoDireita(avo);
+            _noh->InverterCor();
+        } // semelhante a fator -2 e fator do filho 1
+        else if (_noh->ChecaSeEhFilhoAEsquerdaDoPai() and !pai->ChecaSeEhFilhoAEsquerdaDoPai()) {
+            RotacaoDireita(pai);
+            RotacaoEsquerda(avo);
+            _noh->InverterCor();
         }
-        houveBalanceamento = true;
-    } else if (_noh->fator == 2) {
-        cout << "entrou" << endl;
-        int fatorFilhoEsquerda = _noh->esquerda->fator;
-
-        if (fatorFilhoEsquerda == -1) {
-            RotacaoEsquerda(_noh->esquerda);
-			RotacaoDireita(_noh);
-		} else if (fatorFilhoEsquerda >= 0) {
-            RotacaoDireita(_noh);
-		}
-        houveBalanceamento = true;
+        //troca a cor do avo indenpendentemente
+        avo->InverterCor();
     }
-    //se houve balanceamento, alturas e graus precisam ser recalculados
-    if (houveBalanceamento) {
-        AtualizaAlturaDeTodosNohs();
-        RecalcularGraus();
-    }
-    //checar se pai esta balanceado
-    if (_noh->pai != NULL) {
-        CalcularFator(_noh->pai);
-        ChecarBalanceamento(_noh->pai);
+    //forçar a raiz a ser preta
+    if (raiz->cor == "vermelho") {
+        raiz->InverterCor();
     }
 }
 
@@ -361,22 +392,21 @@ void ARN::ImprimeEmOrdem() {
 void ARN::ImprimeEmOrdemAux(Noh* _noh) {
     if (_noh != NULL) {
         ImprimeEmOrdemAux(_noh->esquerda);
-        //cout << _noh->valor << "/" << _noh->altura << " ";
         _noh->AutoPrint();
         ImprimeEmOrdemAux(_noh->direita);
     }
 }
 
-void ARN::CalcularFator(Noh* _noh) {
-    if (_noh->esquerda == NULL and _noh->direita == NULL) {
-        _noh->fator = 0;
-    } else if (_noh->esquerda == NULL) {
-        _noh->fator = 0 - _noh->direita->altura;
-    } else if (_noh->direita == NULL) {
-        _noh->fator = _noh->esquerda->altura - 0;
-    } else {
-        _noh->fator = _noh->esquerda->altura - _noh->direita->altura;
+Noh* ARN::GetTio(Noh* _noh) {
+    if (_noh->pai != NULL and _noh->pai != raiz) {
+        //checa se o pai é filho a direita ou a esquerda do avo
+        if (_noh->pai->ChecaSeEhFilhoAEsquerdaDoPai()) {
+            return _noh->pai->pai->direita;
+        } else {
+            return _noh->pai->pai->esquerda;
+        }
     }
+    return NULL;
 }
 
 int main() {
@@ -384,17 +414,27 @@ int main() {
     ARN arvore;
 
     arvore.ImprimeEmOrdem();
+    arvore.Insere(40);
+    arvore.ImprimeEmOrdem();
+    arvore.Insere(12);
+    arvore.ImprimeEmOrdem();
+    arvore.Insere(68);
+    arvore.ImprimeEmOrdem();
+    arvore.Insere(36);
+    arvore.ImprimeEmOrdem();
+    arvore.Insere(38);
+    arvore.ImprimeEmOrdem();
+    arvore.Insere(60);
+    arvore.ImprimeEmOrdem();
+    arvore.Insere(48);
+    arvore.ImprimeEmOrdem();
+    arvore.Insere(55);
+    arvore.ImprimeEmOrdem();
     arvore.Insere(50);
     arvore.ImprimeEmOrdem();
-    arvore.Insere(30);
+    arvore.Insere(62);
     arvore.ImprimeEmOrdem();
-    arvore.Insere(15);
-    arvore.ImprimeEmOrdem();
-    arvore.Insere(25);
-    arvore.ImprimeEmOrdem();
-    arvore.Insere(20);
-    arvore.ImprimeEmOrdem();
-    arvore.Remove(50);
+    arvore.Insere(65);
     arvore.ImprimeEmOrdem();
 
     return 0;
