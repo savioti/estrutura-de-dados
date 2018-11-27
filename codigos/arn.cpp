@@ -143,10 +143,9 @@ void ARN::Insere(int _valor) {
     }
     cout << "Valor " << novoNoh->valor << " inserido!" << endl;
 
-    if (novoNoh != raiz) {
+    if (novoNoh != raiz and novoNoh->pai->cor == "vermelho") {
         ChecarBalanceamentoInsercao(novoNoh);
     }
-
     AtualizaAltura();
     RecalcularGraus();
 }
