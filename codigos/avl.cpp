@@ -382,11 +382,15 @@ void AVL::CalcularFator(Noh* _noh) {
 int main() {
 
     AVL arvore;
+    cout << "Size of: " << sizeof(arvore) << endl;
 
     arvore.ImprimeEmOrdem();
     arvore.Insere(50);
+    cout << "Size of: " << sizeof(arvore) << endl;
     arvore.ImprimeEmOrdem();
     arvore.Insere(30);
+    cout << "Size of: " << sizeof(arvore) << endl;
+    /*
     arvore.ImprimeEmOrdem();
     arvore.Insere(15);
     arvore.ImprimeEmOrdem();
@@ -396,6 +400,6 @@ int main() {
     arvore.ImprimeEmOrdem();
     arvore.Remove(50);
     arvore.ImprimeEmOrdem();
-
+    */
     return 0;
 }
