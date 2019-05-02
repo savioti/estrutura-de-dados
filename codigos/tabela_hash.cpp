@@ -1,208 +1,167 @@
 #include <iostream>
 using namespace std;
 
+typedef int Dado;
+
 int FuncaoHash(int _chave, int _capacidade) {
-    return (_chave * 13) % _capacidade;
+    return _chave * 13 % _capacidade;
 }
 
 class Noh {
-    friend class TabelaHash;
+friend class TabelaHash;
 public:
-    Noh(int _chave, string _valor) {
+    Noh(int _chave, Dado _dado) {
         chave = _chave;
-        valor = _valor;
+        dado = _dado;
         proximo = NULL;
     }
 private:
-    Noh* proximo;
     int chave;
-    string valor;
+    Dado dado;
+    Noh* proximo;
 };
 
 class TabelaHash {
 public:
-    TabelaHash(int _cap);
-    ~TabelaHash();
-    void Inserir(int _chave, string _valor);
-    string Recuperar(int _chave);
-    void Alterar(int _chave, string _valor);
-    void Remover(int _chave);
+    TabelaHash(int _capacidade) {
+        tabela = new Noh*[_capacidade];
+        capacidade = _capacidade;
+
+        for(int i = 0; i < _capacidade; i++) {
+            tabela[i] = NULL;
+        }
+        
+    }
+    ~TabelaHash() {
+
+    }
+    Dado Recuperar(int _chave);
+    void Inserir(int _chave, Dado _dado);
+    void Alterar(int _chave, Dado _dado);
+    Dado Remover(int _chave);
     void Imprimir();
-    void AumentarCapacidade();
+    void Redimensionar();
 private:
+    Noh** tabela;
     int capacidade;
-    Noh** vetor;
 };
 
-TabelaHash::TabelaHash(int _cap) {
-    vetor = new Noh*[_cap];
-    capacidade = _cap;
-}
-
-TabelaHash::~TabelaHash() {
-    Noh* percorredor = vetor[0];
-    Noh* aDeletar = NULL;
-
-    for (int i = 0; i < capacidade; i++) {
-        percorredor = vetor[i];
-
-        while (percorredor != NULL) {
-            aDeletar = percorredor;
-            percorredor = percorredor->proximo;
-            delete aDeletar;
-        }
-    }
-    delete [] vetor;
-}
-
-void TabelaHash::Inserir(int _chave, string _valor) {
+Dado TabelaHash::Recuperar(int _chave) {
     int numeroHash = FuncaoHash(_chave, capacidade);
 
-    if (vetor[numeroHash] == NULL) {
-        Noh* novoNoh = new Noh(_chave, _valor);
-        vetor[numeroHash] = novoNoh;
+    if (tabela[numeroHash] == NULL) {
+        return -1;
     } else {
-        if (Recuperar(_chave) == "Nao encontrado") {
-            Noh* percorredor = vetor[numeroHash];
+        if (tabela[numeroHash]->chave == _chave) {
+            return tabela[numeroHash]->dado;
+        } else {
+            Noh* percorredor = tabela[numeroHash]->proximo;
 
-            while (percorredor->proximo != NULL) {
+            while(percorredor != NULL) {
+                if (percorredor->chave == _chave) {
+                    return percorredor->dado;
+                }
                 percorredor = percorredor->proximo;
             }
-            Noh* novoNoh = new Noh(_chave, _valor);
-            percorredor->proximo = novoNoh;
-        } else {
-            cerr << "Chave ja existente" << endl;
+            return -1;
         }
     }
 }
 
-string TabelaHash::Recuperar(int _chave) {
+void TabelaHash::Inserir(int _chave, Dado _dado) {
     int numeroHash = FuncaoHash(_chave, capacidade);
+    Noh* novoNoh = new Noh(_chave, _dado);
 
-    if (vetor[numeroHash] == NULL) {
-        return "Nao encontrado";
-    } else if (vetor[numeroHash]->chave == _chave) {
-        return vetor[numeroHash]->valor;
+    if (tabela[numeroHash] == NULL) {
+        tabela[numeroHash] = novoNoh;
+    } else if (Recuperar(_chave) != -1) {
+        cerr << "Chave já existente" << endl;
     } else {
-        if (vetor[numeroHash]->proximo == NULL) {
-            return "Nao encontrado";
-        }
-        Noh* percorredor = vetor[numeroHash];
+        Noh *percorredor = tabela[numeroHash];
 
-        while (percorredor != NULL) {
-            if (percorredor->chave == _chave) {
-                return percorredor->valor;
-            }
+        while(percorredor->proximo != NULL){
             percorredor = percorredor->proximo;
-        }
-        return "Nao encontrado";
+        }        
+        percorredor->proximo = novoNoh;
     }
 }
 
-void TabelaHash::Alterar(int _chave, string _valor) {
-    int numeroHash = FuncaoHash(_chave, capacidade);
+void TabelaHash::Alterar(int _chave, Dado _dado) {
 
-    if (Recuperar(_chave) == "Nao encontrado") {
-        cerr << "Chave inexistente" << endl;
-    } else {
-        if (vetor[numeroHash]->chave == _chave) {
-            vetor[numeroHash]->valor = _valor;
-        } else {
-            Noh* percorredor = vetor[numeroHash];
-
-            while (percorredor->chave != _chave) {
-                percorredor = percorredor->proximo;
-            }
-            percorredor->valor = _valor;
-        }
-    }
-}
-
-void TabelaHash::Remover(int _chave) {
-
-    if (Recuperar(_chave) == "Nao encontrado") {
-        cerr << "Chave inexistente" << endl;
+    if (Recuperar(_chave) == -1) {
+        cerr << "Chave nao existente" << endl;
     } else {
         int numeroHash = FuncaoHash(_chave, capacidade);
-        Noh* percorredor = vetor[numeroHash];
 
-        if (vetor[numeroHash]->chave == _chave) {
-            percorredor = vetor[numeroHash]->proximo;
-            delete vetor[numeroHash];
-            vetor[numeroHash] = percorredor;
+        Noh *percorredor = tabela[numeroHash];
+
+        while(percorredor->chave != _chave && percorredor != NULL){
+            percorredor = percorredor->proximo;
+        }
+        percorredor->dado = _dado;
+    }
+}
+
+Dado TabelaHash::Remover(int _chave) {
+    if (Recuperar(_chave) == -1) {
+        cerr << "Chave inexistente" << endl;
+        return -1;
+    } else {
+        int numeroHash = FuncaoHash(_chave, capacidade);
+
+        if (tabela[numeroHash]->chave == _chave) {
+            Noh* temporario = tabela[numeroHash]->proximo;
+            delete tabela[numeroHash];
+            tabela[numeroHash] = temporario;
         } else {
-            Noh* anterior = vetor[numeroHash];
+            Noh* anterior = tabela[numeroHash];
+            Noh* percorredor = tabela[numeroHash];
 
-            while (anterior->proximo->chave != _chave) {
-                anterior = anterior->proximo;
+            while(percorredor->chave != _chave && percorredor != NULL){
+                anterior = percorredor;
+                percorredor = percorredor->proximo;
             }
-            percorredor = anterior->proximo;
+            
             anterior->proximo = percorredor->proximo;
             delete percorredor;
         }
+        
     }
 }
 
-/*void TabelaHash::AumentarCapacidade() {
-    Noh** novoVetor = new Noh*[capacidade * 2];
-    Noh* percorredor = NULL;
-
-    for (int i = 0; i < capacidade; i++) {
-        percorredor = vetor[i];
-        int numeroHash = FuncaoHash(percorredor->chave, capacidade * 2);
-
-    }
-}*/
-
 void TabelaHash::Imprimir() {
+    for(int i = 0; i < capacidade; i++) {
+        Noh* percorredor = tabela[i];
 
+        while(percorredor != NULL) {
+            cout << percorredor->dado << " ";
+            percorredor = percorredor->proximo;
+        }
+        cout << endl;
+    }
+    cout << "Capacidade: " << capacidade << endl;
+}
+
+void TabelaHash::Redimensionar() {
+    
 }
 
 int main () {
+    TabelaHash tabela(5);
+    tabela.Inserir(0, 1);
+    tabela.Inserir(5, 2);
+    tabela.Inserir(10, 3);
+    tabela.Inserir(15, 4);
+    tabela.Inserir(20, 5);
+    tabela.Inserir(1, 9999);
+    tabela.Inserir(2, 99);
 
-    int opcao, chave, capacidade;
-    string valor;
-    cout << "Digite o tamanho da tabela" << endl;
-    cin >> capacidade;
-
-    TabelaHash tabelaHash(capacidade);
-
-    do {
-        cout << "Digite 1 para insercao, 2 para recuperar valor, 3 para alteracao" << endl;
-        cout << "4 para remocao, 5 para imprimir toda a tabela e 0 para sair." << endl;
-        cin >> opcao;
-
-        if(opcao != 0){
-            if(opcao == 1){
-                cout << "Digite a chave(int): " << endl;
-                cin >> chave;
-                cin.ignore();
-                cout << "Digite o valor(string): " << endl;
-                cin >> valor;
-                tabelaHash.Inserir(chave, valor);
-            } else if(opcao == 2){
-                cout << "Digite a chave(int): " << endl;
-                cin >> chave;
-                cin.ignore();
-                cout << "Valor da chave: " << tabelaHash.Recuperar(chave) << endl;
-            } else if(opcao == 3){
-                cout << "Digite a chave(int): " << endl;
-                cin >> chave;
-                cin.ignore();
-                cout << "Digite o valor(string): " << endl;
-                cin >> valor;
-                tabelaHash.Alterar(chave, valor);
-            } else if (opcao == 4) {
-                cout << "Digite a chave(int): " << endl;
-                cin >> chave;
-                tabelaHash.Remover(chave);
-            } else if (opcao == 5) {
-                tabelaHash.Imprimir();
-            } else {
-                cout << "Operacao invalida!" << endl;
-            }
-        }
-    } while(opcao != 0);
-
+    tabela.Imprimir();
+    tabela.Remover(20);
+    tabela.Imprimir();
+    tabela.Remover(10);
+    tabela.Imprimir();
+    tabela.Remover(0);
+    tabela.Imprimir();
     return 0;
 }
