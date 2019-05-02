@@ -377,3 +377,32 @@ void Lista::TrocaNohs(int _pos1, int _pos2){
         aux2Posterior->anterior = aux1;
     }
 }
+
+void Lista::Inverter() {
+    if (primeiro == NULL) {
+        cerr << "Lista vazia!" << endl;
+    } else {
+        Noh* percorredor = primeiro;
+
+        while(percorredor != NULL){
+            swap(percorredor->anterior, percorredor->proximo);
+            percorredor = percorredor->anterior;
+        }
+        swap(primeiro, ultimo);
+    }
+}
+
+int main() {
+
+    Lista lista;
+    lista.InsereNoFim(0);
+    lista.InsereNoFim(1);
+    lista.InsereNoFim(2);
+    lista.InsereNoFim(3);
+    lista.InsereNoFim(4);
+    lista.Imprime();
+    lista.Inverter();
+    lista.Imprime();
+
+    return 0;
+}
