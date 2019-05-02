@@ -33,7 +33,20 @@ public:
         
     }
     ~TabelaHash() {
+        Noh* anterior = tabela[0];
+        Noh* atual = tabela[0];
 
+        for(int i = 0; i < capacidade; i++) {
+            anterior = tabela[i];
+            atual = tabela[i];
+
+            while(atual != NULL){
+                anterior = atual;
+                atual = atual->proximo;
+                delete anterior;
+            }
+        }
+        delete[] tabela;
     }
     Dado Recuperar(int _chave);
     void Inserir(int _chave, Dado _dado);
