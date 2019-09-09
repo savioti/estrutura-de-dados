@@ -26,7 +26,7 @@ Noh::Noh(Dado _valor) {
     cor = "vermelho";
     pai = NULL;
     esquerda = NULL;
-    direita = NULL;
+    direita = NULL; 
 }
 
 Noh::~Noh() {
@@ -185,13 +185,13 @@ void ARN::ChecarBalanceamentoInsercao(Noh* _noh) {
 
     //CASO 1: pai vermelho, avo preto e tio vermelho
     //SOLUÇÃO: trocar as cores de pai, avo e tio
-    if (pai->cor == "vermelho" and avo->cor == "preto" and (tio != NULL and tio->cor == "vermelho")) {
+    if (pai->cor == "vermelho" and (tio != NULL and tio->cor == "vermelho")) {
         pai->InverterCor();
         avo->InverterCor();
         tio->InverterCor();
     //CASO 2: pai vermelho, avo preto e tio preto
     //SOLUÇÃO: rotações
-    } else if (pai->cor == "vermelho" and avo->cor == "preto" and (tio == NULL or tio->cor == "preto")) {
+    } else if (pai->cor == "vermelho" and (tio == NULL or tio->cor == "preto")) {
         cout << "Tratamento especial" << endl;
         //semelhante a fator 2 e fator do filho 0 ou 1 - rotação simples
         if (_noh->ChecaSeEhFilhoAEsquerdaDoPai() and pai->ChecaSeEhFilhoAEsquerdaDoPai()) {

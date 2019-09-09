@@ -13,6 +13,7 @@ private:
     Noh* proximo;
 };
 
+
 class ListaSimples {
 
 public:
@@ -25,6 +26,7 @@ public:
     void Troca(int _pos1, int _pos2);
     void Imprime();
 private:
+
     Noh* primeiro;
     Noh* ultimo;
     int tamanho;
@@ -64,6 +66,7 @@ void ListaSimples::Insere(int _valor, int _posicao) {
 
     if (_posicao > tamanho or _posicao < 0) {
         cerr << "Posicao nao existente!" << endl;
+        return;
     } else if (primeiro == NULL) {
         Noh* novoNoh = new Noh(_valor);
         primeiro = novoNoh;
@@ -91,6 +94,7 @@ void ListaSimples::Insere(int _valor, int _posicao) {
         novoNoh->proximo = posterior;
         tamanho++;
     }
+    
 }
 
 int ListaSimples::Remove() {

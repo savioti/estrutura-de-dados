@@ -246,6 +246,8 @@ void ABB::ImprimeEmOrdemAux(Noh* _noh) {
     }
 }
 
+
+
 int main() {
 
     ABB arvore;

@@ -92,7 +92,7 @@ int Torneio::RetiraVencedor() {
 
 int main() {
 
-    Torneio torneio(19);
+    Torneio torneio(15);
 
     torneio.AdicionaParticipante(10);
     torneio.AdicionaParticipante(5);
@@ -102,8 +102,6 @@ int main() {
     torneio.AdicionaParticipante(55);
     torneio.AdicionaParticipante(35);
     torneio.AdicionaParticipante(9);
-    torneio.AdicionaParticipante(10);
-    torneio.AdicionaParticipante(2);
 
     torneio.Imprime();
 
