@@ -12,6 +12,8 @@ public:
     int RetiraVencedor();
     void AdicionaParticipante(int _dado);
     void Imprime();
+    int GetFilhoEsquerda(int _pos);
+    int GetFilhoDireita(int _pos);
 private:
     int* vetor;
     int mTamanho;
@@ -49,10 +51,12 @@ void Torneio::AdicionaParticipante(int _dado) {
 
     if(vetor[mCapacidade -1] != -1){
         cout << "Vetor cheio" << endl;
-    } else {
+    }
+    else {
         vetor[mTamanho + primeiraFolha] = _dado;
         mTamanho++;
     }
+
     if (vetor[mCapacidade - 1] != -1) {
         Organiza();
     }
@@ -67,11 +71,19 @@ void Torneio::Imprime() {
 }
 
 void Torneio::Organiza() {
-
     int ultimoGalhoNaoFolha = (mCapacidade / 2) - 1;
 
-    for(int i = ultimoGalhoNaoFolha; i >= 0; i--){
-        vetor[i] = max(vetor[(i * 2) + 1], vetor[(i * 2) + 2]);
+    for(int i = ultimoGalhoNaoFolha; i >= 0; i--) {
+        // vetor[i] = max(vetor[(i * 2) + 1], vetor[(i * 2) + 2]);
+        int filhoEsquerda = GetFilhoEsquerda(i);
+        int filhoDireita = GetFilhoDireita(i);
+
+        if (vetor[filhoEsquerda] > vetor[filhoDireita]) {
+            vetor[i] = vetor[filhoEsquerda];
+        }
+        else {
+            vetor[i] = vetor[filhoDireita];
+        }
     }
 }
 
@@ -88,6 +100,14 @@ int Torneio::RetiraVencedor() {
     Organiza();
 
     return vencedor;
+}
+
+int Torneio::GetFilhoEsquerda(int _pos) {
+    return _pos * 2 + 1;
+}
+
+int Torneio::GetFilhoDireita(int _pos) {
+    return _pos * 2 + 2;
 }
 
 int main() {

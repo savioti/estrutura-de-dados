@@ -4,7 +4,7 @@ using namespace std;
 typedef string Dado;
 
 int FuncaoHash(int _chave, int _capacidade) {
-    return _chave % _capacidade;
+    return _chave * 13 % _capacidade;
 }
 
 class Noh {

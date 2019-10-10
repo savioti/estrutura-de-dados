@@ -8,21 +8,33 @@ public:
         valor = n;
         proximo = NULL;
     };
+    Noh* Inserir(Noh* novo);
 private:
     int valor;
     Noh* proximo;
 };
 
+Noh* Noh::Inserir(Noh* novo) {
+    if (proximo == NULL) {
+        proximo = novo;
+    }
+    else {
+        proximo->Inserir(novo);
+        return novo;
+    }
+}
 
 class ListaSimples {
 
 public:
     ListaSimples();
     ~ListaSimples();
+    void InserirNoh(int _valor);
     void Insere(int _valor);
     void Insere(int _valor, int _posicao);
     int Remove();
     int Remove(int _valor);
+    int RemoverPorPosicao(int _pos);
     void Troca(int _pos1, int _pos2);
     void Imprime();
 private:
@@ -38,7 +50,20 @@ ListaSimples::ListaSimples() {
     ultimo = NULL;
 }
 
-ListaSimples::~ListaSimples() {
+void ListaSimples::InserirNoh(int _valor) {
+    Noh* novo = new Noh(_valor);
+
+    if (primeiro == NULL) {
+        primeiro = novo;
+        ultimo = novo;
+    }
+    else {
+        ultimo = primeiro->Inserir(novo);
+    }
+}
+
+    ListaSimples::~ListaSimples()
+{
     Noh* nohAtual = primeiro;
     Noh* nohAux = primeiro;
 
@@ -67,19 +92,23 @@ void ListaSimples::Insere(int _valor, int _posicao) {
     if (_posicao > tamanho or _posicao < 0) {
         cerr << "Posicao nao existente!" << endl;
         return;
-    } else if (primeiro == NULL) {
+    } 
+    else if (primeiro == NULL) {
         Noh* novoNoh = new Noh(_valor);
         primeiro = novoNoh;
         ultimo = novoNoh;
         tamanho++;
-    } else if (_posicao == tamanho) {
+    } 
+    else if (_posicao == tamanho) {
         Insere(_valor);
-    } else if (_posicao == 0) {
+    } 
+    else if (_posicao == 0) {
         Noh* novoNoh = new Noh(_valor);
         novoNoh->proximo = primeiro;
         primeiro = novoNoh;
         tamanho++;
-    } else {
+    } 
+    else {
         Noh* novoNoh = new Noh(_valor);
         Noh* anterior = primeiro;
         Noh* posterior = primeiro;
@@ -150,6 +179,59 @@ int ListaSimples::Remove(int _valor) {
     return retorno;
 }
 
+int ListaSimples::RemoverPorPosicao(int _pos) {
+    if (primeiro == NULL) {
+        cerr << "Lista vazia!" << endl;
+        return -1;
+    }
+    else if (tamanho == 1) {
+        Remove();
+    }
+    else if (_pos < 0 || _pos >= tamanho) {
+        cerr << "Posicao invalida" << endl;
+    }
+    else {
+        if (_pos == 0) {
+            int retorno = primeiro->valor;
+            Noh* segundo = primeiro->proximo;
+            delete primeiro;
+            primeiro = segundo;
+            tamanho--;
+            return retorno;
+        }
+        else if (_pos == tamanho - 1) {
+            int retorno = ultimo->valor;
+            Noh* penultimo = primeiro;
+
+            while (penultimo->proximo != ultimo) {
+                penultimo = penultimo->proximo;
+            }
+
+            penultimo->proximo = NULL;
+            delete ultimo;
+            ultimo = penultimo;
+            tamanho--;
+            return retorno;
+        }
+        else {
+            Noh* anterior = primeiro;
+            int i = 0;
+
+            while (i < _pos - 1) {
+                anterior = anterior->proximo;
+                i++;
+            }
+
+            Noh* posterior = anterior->proximo;
+            int retorno = posterior->valor;
+            anterior->proximo = posterior->proximo;
+            delete posterior;
+            tamanho--;
+            return retorno;
+        }
+    }
+}
+
 void ListaSimples::Troca(int _pos1, int _pos2) {
 
     if (_pos1 > _pos2) {
@@ -160,11 +242,13 @@ void ListaSimples::Troca(int _pos1, int _pos2) {
 
     if (_pos1 < 0 or _pos2 >= tamanho or _pos1 == _pos2) {
         cerr << "Posicoes invalidas!" << endl;
-    } else {//vai rolar troca
+    } 
+    else {//vai rolar troca
         Noh* aux1 = primeiro;
         Noh* aux2 = primeiro;
         Noh* anterior1 = primeiro;
         Noh* anterior2 = primeiro;
+        
         int i = 0;
 
         while (i < _pos1) {
@@ -241,4 +325,19 @@ void ListaSimples::Imprime() {
         nohAtual = nohAtual->proximo;
     }
     cout << endl << "Tamanho: " << tamanho << endl;
+}
+
+int main() {
+    ListaSimples lista;
+
+    lista.Insere(0);
+    lista.Insere(1);
+    lista.Insere(2);
+    lista.Insere(3);
+
+    lista.Imprime();
+
+    lista.RemoverPorPosicao(2);
+
+    lista.Imprime();
 }

@@ -55,7 +55,7 @@ public:
     void Imprimir();
     void Redimensionar();
 private:
-    Noh** tabela;
+       tabela;
     int capacidade;
 };
 
@@ -126,7 +126,8 @@ Dado TabelaHash::Remover(int _chave) {
             Noh* temporario = tabela[numeroHash]->proximo;
             delete tabela[numeroHash];
             tabela[numeroHash] = temporario;
-        } else {
+        } 
+        else {
             Noh* anterior = tabela[numeroHash];
             Noh* percorredor = tabela[numeroHash];
 

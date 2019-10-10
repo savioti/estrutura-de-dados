@@ -406,4 +406,8 @@ int main() {
     lista.Imprime();
 
     return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8ca7c6d8fdab63eff295b44c36634072bd8f87d2
