@@ -27,6 +27,7 @@ public:
     void Inserir(Dado _valor, int _chave);
     Dado Recuperar(int _chave);
     Dado Remover(int _chave);
+    void Alterar(int _chave, Dado _valor); 
 private:
     Noh** tabela;
     int capacidade;
@@ -134,5 +135,25 @@ Dado TabelaHash::Remover(int _chave) {
             return retorno;
         }
         
+    }
+}
+
+void TabelaHash::Alterar(int _chave, Dado _valor) {
+    if (Recuperar(_chave) == -1) {
+        cerr << "Chave inexistente" << endl;
+    }
+    else {
+        int numeroHash = FuncaoHash(_chave, capacidade);
+        Noh* percorredor = tabela[numeroHash];
+        bool alterado = false;
+
+        while (alterado == false) {
+            if (percorredor->chave == _chave) {
+                percorredor->valor = _valor;
+                alterado = true;
+            }
+
+            percorredor = percorredor->proximo;
+        }
     }
 }

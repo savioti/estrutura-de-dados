@@ -21,7 +21,7 @@ public:
     }
 
     void Inserir(Noh* novo);
-    int ContarGrau();
+    int ContarNivel();
 private:
     Dado valor;
     Noh* pai;
@@ -50,12 +50,12 @@ void Noh::Inserir(Noh* novo) {
     }
 }
 
-int Noh::ContarGrau() {
+int Noh::ContarNivel() {
     if (pai == NULL) {
         return 0;
     }
     else {
-        return 1 + pai->ContarGrau();
+        return 1 + pai->ContarNivel();
     }
 }
 
@@ -67,8 +67,14 @@ public:
     void InserirRecursivo(Dado _valor);
     Noh* BuscarNoh(Dado _valor);
     void GetAltura();
+    int ContarFolhas();
+    void ImprimeEmOrdem();
+    int ContarNohs();
 private:
+    int ContarFolhasAux(Noh* _noh);
+    int ContarNohsAux(Noh* _noh);
     int GetAlturaAux(Noh* atual);
+    void ImprimeEmOrdemAux(Noh* _noh);
     Noh* raiz;
     int altura;
 };
@@ -169,4 +175,65 @@ int ABB::GetAlturaAux(Noh* atual) {
     else {
         return 1 + direita;
     }
+}
+
+int ABB::ContarFolhas() {
+    return ContarFolhasAux(raiz);
+}
+
+int ABB::ContarFolhasAux(Noh* _noh) {
+    if (_noh == NULL) {
+        return 0;
+    }
+
+    if (_noh->esquerda == NULL and _noh->direita == NULL) {
+        return 1;
+    }
+    else {
+        return ContarFolhasAux(_noh->esquerda) + ContarFolhasAux(_noh->direita);
+    }
+}
+
+void ABB::ImprimeEmOrdem() {
+    ImprimeEmOrdemAux(raiz);
+    cout << endl << "Altura: " << endl;
+}
+
+void ABB::ImprimeEmOrdemAux(Noh* _noh) {
+    if (_noh != NULL) {
+        ImprimeEmOrdemAux(_noh->esquerda);
+        cout << _noh->valor << " ";
+        ImprimeEmOrdemAux(_noh->direita);
+    }
+}
+
+int ABB::ContarNohs() {
+    ContarNohsAux(raiz);
+}
+
+int ABB::ContarNohsAux(Noh* _noh) {
+    if (_noh == NULL) {
+        return 0;
+    }
+
+    return 1 + ContarNohsAux(_noh->direita) + ContarNohsAux(_noh->esquerda);
+}
+
+int main() {
+    ABB abb;
+    abb.Inserir(50);
+    abb.Inserir(75);
+    abb.Inserir(25);
+    abb.Inserir(15);
+    abb.Inserir(35);
+    abb.Inserir(10);
+    // abb.Inserir(5);
+    abb.Inserir(3);
+    // abb.Inserir(7);
+
+    // cout << abb.ContarFolhas() << endl;
+    // abb.ImprimeEmOrdem();
+    cout << abb.ContarNohs() << endl;
+
+    return 0;
 }
