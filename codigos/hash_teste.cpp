@@ -30,6 +30,7 @@ public:
     Dado Recuperar(int _chave);
     void Inserir(int _chave, Dado _valor);
     Dado Remover(int _chave);
+    void Alterar(Dado _valor, int _chave);
 private:
     int capacidade;
     Noh** tabela;
@@ -116,8 +117,26 @@ Dado TabelaHash::Remover(int _chave) {
 
             anterior->proximo = atual->proximo;
         }
-        
-        
     }
-    
+}
+
+void TabelaHash::Alterar(Dado _valor, int _chave) {
+    if (Recuperar(_chave) == "Nao encontrado") {
+        cerr << "Chave inexistente" << endl;
+    }
+    else {
+        int numeroHash = FuncaoHash(_chave, capacidade);
+
+        Noh* percorredor = tabela[numeroHash];
+        bool encontrado = false;
+
+        while (encontrado == false) {
+            if (_chave == percorredor->chave) {
+                percorredor->valor = _valor;
+                encontrado = true;
+            }
+
+            percorredor = percorredor->proximo;
+        }
+    }
 }

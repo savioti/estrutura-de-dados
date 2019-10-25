@@ -216,7 +216,7 @@ int ABB::ContarNohsAux(Noh* _noh) {
         return 0;
     }
 
-    return 1 + ContarNohsAux(_noh->direita) + ContarNohsAux(_noh->esquerda);
+    return 1 + ContarNohsAux(_noh->esquerda) + ContarNohsAux(_noh->direita);
 }
 
 int main() {
