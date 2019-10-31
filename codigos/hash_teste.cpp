@@ -126,7 +126,6 @@ void TabelaHash::Alterar(Dado _valor, int _chave) {
     }
     else {
         int numeroHash = FuncaoHash(_chave, capacidade);
-
         Noh* percorredor = tabela[numeroHash];
         bool encontrado = false;
 
