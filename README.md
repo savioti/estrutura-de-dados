@@ -1,2 +1,2 @@
 # estrutura-de-dados
-Códigos desenvolvidos para os aulões de ED
+Códigos desenvolvidos ministrar aulas de estruturas de dados em C++.
