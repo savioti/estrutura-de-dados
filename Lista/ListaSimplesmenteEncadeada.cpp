@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 // Use isso para trocar o tipo de dado armazenado no Noh.
@@ -15,6 +16,7 @@ class NohSimples {
         void SetValor(Dado valor);
         NohSimples* GetProximo();
         void SetProximo(NohSimples* proximo);
+        string ToString();
 
     private:
         Dado valor;
@@ -55,6 +57,12 @@ NohSimples* NohSimples::GetProximo() {
 
 void NohSimples::SetProximo(NohSimples* proximo) { 
     this->proximo = proximo; 
+}
+
+string NohSimples::ToString() {
+    stringstream ss;
+    ss << "Valor: " << valor << "\nProximo: " << proximo->valor;
+    return ss.str();
 }
 
 #pragma endregion
@@ -122,11 +130,11 @@ void ListaSimples::Inserir(Dado valor) {
         ultimo = novo;
     } 
     else {
-        ultimo->SetProximo(novo);
-        ultimo = novo;
+        ultimo = primeiro->Inserir(novo);
     }
     
     cout << "Noh resultante com valor " << novo->GetValor() << endl;
+    cout << "Ultima posicao da lista " << ultimo->GetValor() << endl;
     tamanho++;
 }
 
@@ -345,7 +353,8 @@ void ListaSimples::Imprimir() {
     int indice = 0;
 
     while ((percorredor != NULL) and (indice < tamanho)) {
-        cout << "Posicao " << indice << ": " << percorredor->GetValor() << " " << endl;
+        cout << "Posicao " << indice << ": ";
+        cout << percorredor->ToString() << endl;
         percorredor->SetProximo(percorredor->GetProximo());
         indice++;
     }
